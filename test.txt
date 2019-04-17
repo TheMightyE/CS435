@@ -2,6 +2,13 @@
 10 alex
 10 tom
 10 jerry
+10 hi
+10 oh
+10 baby
+10 ohohoh
+10 loopsopso
+10 oompa
+10 loompa
 11 tom
 12 jerry
 15 ready-to-print

@@ -36,15 +36,9 @@ public class Lexicon {
 
     public void HashPrint() {
         /* Print index of T and its value from A */
-        System.out.println("[HASHTABLE T]:");
-        for (int i = 0; i < T.table.length; i++) {
-            int key = T.getValue(i);
-            String value = T.getValueFromA(key, A);
+        System.out.print("[HASHTABLE T]\t\t\t\t\t[A]: ");
 
-            System.out.println("[" + i + "] => " + value);
-        }
         /* Print A nicely. */
-        System.out.println("[STRING A]:");
         for (int i = 0; i < A.length(); i++) {
             char c = A.charAt(i);
             if (c == '\0') {
@@ -53,6 +47,13 @@ public class Lexicon {
                 System.out.print(c);
         }
         System.out.println();
+
+        for (int i = 0; i < T.table.length; i++) {
+            int key = T.getValue(i);
+            String value = T.getValueFromA(key, A);
+
+            System.out.println("[" + i + "] => " + value);
+        }
     }
 
     public void HashInsert(String w) {

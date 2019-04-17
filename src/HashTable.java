@@ -76,8 +76,6 @@ class HashTable {
             String w = getValueFromA(oldTable[i], A);
             if (!w.equals(""))
                 insertInTable(w, A, oldTable[i]);
-
-            System.out.println();
         }
 
     }
@@ -94,7 +92,7 @@ class HashTable {
         }
 
         /* Search for an empty slot in T */
-        while (getValue(idx) != -1) {
+        while (getValue(idx) != -1 && getValue(idx) != -2) {
 //            System.out.println("Collision at slot " + idx);
             // TODO: Problem with formula
             /* Compute h(k,i) = (h'(k)+i^2) */
@@ -115,7 +113,7 @@ class HashTable {
     int delete(String s, String A) {
         int idx = search(s, A);
         if (idx != -1) {
-            setValue(idx, -1);
+            setValue(idx, -2);
             return idx;
         } else {
             return -1;
@@ -131,7 +129,7 @@ class HashTable {
 
         int probingIdx = 1;
         // FIXME: && probingIndex < tableSize?
-        while (getValue(idx) != -1 && !getValueFromA(key, A).equals(w)) {
+        while (key == -2 || (key != -1 && !getValueFromA(key, A).equals(w))) {
             idx = (idx + (probingIdx * probingIdx)) % table.length;
             key = getValue(idx);
             probingIdx++;
@@ -146,7 +144,7 @@ class HashTable {
 
 
     String getValueFromA(int i, String A) {
-        if (i != -1) {
+        if (i != -1 && i != -2) {
             String w = "";
             for (int j = i; A.charAt(j) != '\0'; j++) {
                 w += A.charAt(j);
