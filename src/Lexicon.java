@@ -8,21 +8,6 @@ public class Lexicon {
     private String A; // An array of chars, NULL separated
     private int m; // Size of T. Size of A is 15m initially
 
-    /* Possible commands for HashBatch */
-
-
-    public int getTableSize() {
-        return m;
-    }
-
-    public HashTable getTable() {
-        return T;
-    }
-
-    public String getA() {
-        return A;
-    }
-
     public void HashCreate(int m) {
         this.m = m;
         int sizeOfA = 15 * m;
@@ -46,13 +31,13 @@ public class Lexicon {
             } else
                 System.out.print(c);
         }
-        System.out.println();
 
+        /* Print T nicely. */
         for (int i = 0; i < T.table.length; i++) {
             int key = T.getValue(i);
             String value = T.getValueFromA(key, A);
 
-            System.out.println("[" + i + "] => " + value);
+            System.out.println("[" + i + "]: " + value);
         }
     }
 
@@ -61,18 +46,34 @@ public class Lexicon {
         char[] c = A.toCharArray();
         /* Find empty spot in A and insert w in it. */
         int freeSpot = findFreeSpaceInA(w);
-//        String s = A.substring(0, freeSpot) + w + A.substring(freeSpot + 1);
         for (int i = freeSpot, j = 0; j < w.length(); i++, j++) {
             c[i] = w.charAt(j);
         }
         A = new String(c);
 
         T.insertInTable(w, A, freeSpot);
+
+        /* In case the size of T changed. */
         m = T.getSize();
     }
 
     public int HashDelete(String w) {
-        return T.delete(w, A);
+        /* Set all the characters of the string in A to stars (*). */
+        int idx = T.search(w, A);
+        if (idx != -1) {
+            int indexOfWordInA = T.getValue(idx);
+            char[] a = A.toCharArray();
+            for (int i = indexOfWordInA; a[i] != '\0'; i++) {
+                a[i] = '*';
+            }
+            A = new String(a);
+
+            /* Delete the word from T and return the index if it was found. */
+            return T.delete(idx);
+        } else {
+            return -1;
+        }
+
     }
 
     public int HashSearch(String w) {
@@ -82,7 +83,7 @@ public class Lexicon {
     public void HashBatch(String filename) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(filename));
-            String line = "";
+            String line;
             while ((line = br.readLine()) != null) {
                 String[] lineArray = line.split(" ");
                 String argument = "";
@@ -113,7 +114,6 @@ public class Lexicon {
                 COMMENT = 15;
 
         int idx;
-//        System.out.println("command = [" + command + "], arg = [" + arg + "]");
         switch (command) {
             case INSERT:
                 HashInsert(arg);
@@ -127,7 +127,6 @@ public class Lexicon {
                 }
                 break;
             case SEARCH:
-
                 idx = HashSearch(arg);
                 if (idx == -1) {
                     System.out.format("%s not found\n", arg);

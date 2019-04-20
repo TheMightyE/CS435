@@ -1,16 +1,18 @@
 import java.util.Arrays;
 
+/*
+ * Implementation of a Hash Table. Global variable 'table' is where the hashed values are stored.
+ * Instead of the table pointing to strings, it points to an integer which corresponds to an
+ * index in 'String A' in 'Lexicon.java'. The integer value in 'table' is the starting index
+ * of the word in 'A'.
+ */
 class HashTable {
     /* An integer array that holds references to locations in array A */
-//    int[] table;
     int[] table;
-    private int tableSize;
     private int collisions;
 
     HashTable(int size) {
-//        table = new int[size];
         table = new int[size];
-        tableSize = size;
         Arrays.fill(table, -1);
     }
 
@@ -19,17 +21,21 @@ class HashTable {
     }
 
     int getSize() {
-        return tableSize;
+        return table.length;
     }
 
     int getCollisions() {
         return collisions;
     }
 
+    int getValue(int idx) {
+        return table[idx];
+    }
+
     /**
      * Computes and returns hash of a given string
      */
-    int hashCode(String s) {
+    private int hashCode(String s) {
         int h = 0;
         for (int i = 0; i < s.length(); i++)
             h += (int) s.charAt(i);
@@ -37,11 +43,7 @@ class HashTable {
         return h % table.length;
     }
 
-    int getValue(int idx) {
-        return table[idx];
-    }
-
-    boolean hashFull() {
+    private boolean hashFull() {
         int c = 0;
         for (int i = 0; i < table.length; i++) {
             if (getValue(i) == -1) {
@@ -58,8 +60,10 @@ class HashTable {
         return true;
     }
 
-    void resizeTable(String A) {
-        /* This function doubles the size of the table */
+    /**
+     * Doubles the size of the table.
+     */
+    private void resizeTable(String A) {
         int oldSize = table.length;
         int newSize = table.length * 2;
 
@@ -80,23 +84,21 @@ class HashTable {
 
     }
 
+    /**
+     * Inserts a reference to the value in A in the table.
+     */
     void insertInTable(String w, String A, int freeIdxInA) {
-//        table[idx] = referenceToA;
         int idx = hashCode(w);
         int probingIdx = 1;
 
         /* Check if table is full and increase it's size. */
         if (hashFull()) {
-            // TODO: Maybe problem with resizeTable()
             resizeTable(A);
         }
 
         /* Search for an empty slot in T */
         while (getValue(idx) != -1 && getValue(idx) != -2) {
-//            System.out.println("Collision at slot " + idx);
-            // TODO: Problem with formula
             /* Compute h(k,i) = (h'(k)+i^2) */
-//            idx = (idx + (int) Math.pow(probingIdx, 2)) % table.length;
             idx = (idx + (probingIdx * probingIdx)) % table.length;
             probingIdx++;
             collisions++;
@@ -109,31 +111,29 @@ class HashTable {
 
     /**
      * Deletes the value in table T. Does not delete the string in A as per assignment.
+     * Deleted slot is set to -2. This simply represents a deleted slot for the search()
+     * function.
      */
-    int delete(String s, String A) {
-        int idx = search(s, A);
-        if (idx != -1) {
-            setValue(idx, -2);
-            return idx;
-        } else {
-            return -1;
-        }
+    int delete(int idx) {
+        /* Set slot to -2 to represent deleted slot. */
+        setValue(idx, -2);
+        return idx;
     }
 
     /**
-     * Searches for a given string in A. If string not found, returns -1.
+     * Searches for a given string in table and in A. If string not found, returns -1.
      */
     int search(String w, String A) {
         int idx = hashCode(w);
         int key = getValue(idx);
 
         int probingIdx = 1;
-        // FIXME: && probingIndex < tableSize?
-        while (key == -2 || (key != -1 && !getValueFromA(key, A).equals(w))) {
+        while (key == -2 || key != -1 && !(getValueFromA(key, A)).equals(w)) {
             idx = (idx + (probingIdx * probingIdx)) % table.length;
             key = getValue(idx);
             probingIdx++;
         }
+
 
         if (getValueFromA(key, A).equals(w)) {
             return idx;
@@ -143,6 +143,9 @@ class HashTable {
     }
 
 
+    /**
+     * Takes the reference value from 'table' and gets the word from 'A'.
+     */
     String getValueFromA(int i, String A) {
         if (i != -1 && i != -2) {
             String w = "";

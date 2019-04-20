@@ -10,6 +10,12 @@
 10 oompa
 10 loompa
 11 tom
+11 oompa
+11 loopsopso
 12 jerry
+12 baby
+12 oh
+12 hi
+12 loopsopso
 15 ready-to-print
 13
